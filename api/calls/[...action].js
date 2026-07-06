@@ -8,7 +8,7 @@
 //   Voice Request URL  -> https://dialer.brandigade.com/api/calls/voice
 //   (status callback is set programmatically to /api/calls/status, see below)
 const db = require('../../lib/database');
-const { withApi, withAuth, ok, fail } = require('../../lib/http');
+const { withApi, withAuth, ok, fail, getActionSegments } = require('../../lib/http');
 const { getSettings, VoiceResponse, validateTwilioSignature, AccessToken, VoiceGrant } = require('../../lib/twilio');
 const { logInfo, logError } = require('../../lib/logger');
 
@@ -138,8 +138,7 @@ async function handleLog(req, res) {
 }
 
 module.exports = withApi(async (req, res) => {
-  const segments = Array.isArray(req.query.action) ? req.query.action : [req.query.action].filter(Boolean);
-  const [route] = segments;
+  const [route] = getActionSegments(req, 'calls');
 
   switch (route) {
     case 'token': return handleToken(req, res);
