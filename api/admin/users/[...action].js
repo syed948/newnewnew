@@ -6,7 +6,7 @@
 // api/admin/users/index.js since that's an exact path, not a dynamic one.
 const crypto = require('crypto');
 const db = require('../../../lib/database');
-const { withApi, withAdmin, ok, fail } = require('../../../lib/http');
+const { withApi, withAdmin, ok, fail, getActionSegments } = require('../../../lib/http');
 const { hashPassword } = require('../../../lib/auth');
 const { logInfo } = require('../../../lib/logger');
 
@@ -58,8 +58,7 @@ async function handleResetPassword(req, res, id) {
 }
 
 module.exports = withApi(withAdmin(async (req, res) => {
-  const segments = Array.isArray(req.query.action) ? req.query.action : [req.query.action].filter(Boolean);
-  const [idStr, sub] = segments;
+  const [idStr, sub] = getActionSegments(req, 'users');
   const id = Number(idStr);
   if (!id) return fail(res, 400, 'Invalid user id.');
 
