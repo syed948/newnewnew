@@ -177,6 +177,24 @@ password for, or delete any teammate from the same screen.
 
 ## Notes on the serverless-specific tradeoffs
 
+- **Twilio Voice SDK loads from jsDelivr, not `sdk.twilio.com`.** Twilio retired their own CDN
+  hosting as of Voice SDK 2.0 — `https://sdk.twilio.com/js/voice/releases/...` URLs no longer
+  serve anything, which surfaces in the browser as `Twilio is not defined` (the script tag
+  fails to load, so the global never gets created). `public/app.html` and `public/admin.html`
+  instead load `https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2/dist/twilio.min.js`, jsDelivr's
+  mirror of the same npm package Twilio tells you to install. The `@2` pins the major version
+  (matching what the rest of this app expects) while still picking up minor/patch updates
+  automatically.
+
+- **Catch-all routing parses `req.url` directly, not `req.query.action`.** An earlier version
+  of this project assumed Vercel would auto-populate `req.query.action` with the path segments
+  matched by a file like `api/auth/[...action].js` — that convenience is actually specific to
+  Next.js's request wrapper, not something plain (non-framework) Vercel Serverless Functions get
+  automatically. `getActionSegments()` in `lib/http.js` parses the segments from `req.url`
+  itself instead, which works regardless of framework. If you ever see a `"Unknown ... route"`
+  JSON error where the request clearly reached the right function, this is the mechanism to
+  check first.
+
 - **Rate limiting** (`lib/http.js`) is in-memory per warm function instance — it meaningfully
   slows down brute-force attempts hitting the same warm container, but isn't a hard guarantee
   across every concurrent instance. For that, add [Upstash Ratelimit](https://upstash.com/docs/redis/sdks/ratelimit-ts/overview)

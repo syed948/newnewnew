@@ -7,8 +7,8 @@ process.env.ALLOWED_ORIGINS = 'https://dialer.brandigade.com';
 process.env.BOOTSTRAP_ADMIN_EMAIL = 'admin@brandigade.com';
 process.env.BOOTSTRAP_ADMIN_PASSWORD = 'change-me-immediately';
 
-function mockReq({ method = 'GET', body = {}, headers = {}, query = {} } = {}) {
-  return { method, body, headers, query, url: '/test', socket: {} };
+function mockReq({ method = 'GET', body = {}, headers = {}, query = {}, url = '/test' } = {}) {
+  return { method, body, headers, query, url, socket: {} };
 }
 
 function mockRes() {
@@ -41,12 +41,12 @@ async function main() {
   const adminCalls = require('./api/admin/calls');
   const adminMessages = require('./api/admin/messages');
 
-  const login = (req, res) => { req.query.action = ['login']; return authRoute(req, res); };
-  const meEndpoint = (req, res) => { req.query.action = ['me']; return authRoute(req, res); };
-  const userById = (req, res) => { req.query.action = [req.query.id]; return usersAction(req, res); };
-  const resetPw = (req, res) => { req.query.action = [req.query.id, 'reset-password']; return usersAction(req, res); };
-  const tokenEndpoint = (req, res) => { req.query.action = ['token']; return callsRoute(req, res); };
-  const smsIndex = (req, res) => { req.query.action = [req.method === 'GET' ? 'list' : 'send']; return smsRoute(req, res); };
+  const login = (req, res) => { req.url = '/api/auth/login'; return authRoute(req, res); };
+  const meEndpoint = (req, res) => { req.url = '/api/auth/me'; return authRoute(req, res); };
+  const userById = (req, res) => { req.url = `/api/admin/users/${req.query.id}`; return usersAction(req, res); };
+  const resetPw = (req, res) => { req.url = `/api/admin/users/${req.query.id}/reset-password`; return usersAction(req, res); };
+  const tokenEndpoint = (req, res) => { req.url = '/api/calls/token'; return callsRoute(req, res); };
+  const smsIndex = (req, res) => { req.url = req.method === 'GET' ? '/api/sms/list' : '/api/sms/send'; return smsRoute(req, res); };
 
   // 1. Login as bootstrap admin
   let res = mockRes();

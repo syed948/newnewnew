@@ -56,8 +56,13 @@ async function handleVoice(req, res) {
     }
   }
 
-  const to = (req.body?.To || '').trim();
-  const userId = identityFromClient(req.body?.From || '');
+  let toParam = req.body?.destination || req.body?.To || '';
+  if (Array.isArray(toParam)) toParam = toParam[0] || '';
+  const to = String(toParam).trim();
+
+  let fromParam = req.body?.From || '';
+  if (Array.isArray(fromParam)) fromParam = fromParam[0] || '';
+  const userId = identityFromClient(String(fromParam));
   const callerId = s.twilio_caller_id || undefined;
   const twiml = new VoiceResponse();
 

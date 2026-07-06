@@ -93,7 +93,7 @@
       callBtn.style.display = 'none';
       hangupBtn.style.display = 'flex';
 
-      activeCall = await device.connect({ params: { To: to } });
+      activeCall = await device.connect({ params: { To: to, destination: to } });
 
       activeCall.on('accept', () => setStatus('Connected', 'connected'));
       activeCall.on('disconnect', resetCallUI);
