@@ -1,0 +1,5 @@
+<svg width="180" height="32" viewBox="0 0 180 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brandigade">
+  <rect x="0" y="4" width="24" height="24" rx="7" fill="#2454FF"/>
+  <path d="M8 16.5 L12 20.5 L18 11.5" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="32" y="22" font-family="Manrope, sans-serif" font-size="17" font-weight="800" fill="#10182B" letter-spacing="-0.3">Brandigade</text>
+</svg>

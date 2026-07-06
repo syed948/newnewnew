@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brandigade Dialer — Sign in</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="brand"><img src="/assets/logo.svg" alt="Brandigade" /></div>
+      <h1>Sign in to Dialer</h1>
+      <p class="sub">Use the email and password an admin set up for you.</p>
+
+      <div class="login-error" id="loginError"></div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="email">Work email</label>
+          <input type="email" id="email" placeholder="you@brandigade.com" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-primary" id="loginBtn" style="width:100%; margin-top: 6px;">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>
