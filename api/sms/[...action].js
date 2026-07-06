@@ -4,7 +4,7 @@
 // (Twilio's "a message comes in" webhook) instead of two separate functions.
 // Twilio Console: point "A message comes in" at https://dialer.brandigade.com/api/sms/inbound
 const db = require('../../lib/database');
-const { withApi, withAuth, ok, fail } = require('../../lib/http');
+const { withApi, withAuth, ok, fail, getActionSegments } = require('../../lib/http');
 const { getTwilioClient, getSettings, MessagingResponse, validateTwilioSignature } = require('../../lib/twilio');
 const { logInfo, logError } = require('../../lib/logger');
 
@@ -77,8 +77,7 @@ async function handleInbound(req, res) {
 }
 
 module.exports = withApi(async (req, res) => {
-  const segments = Array.isArray(req.query.action) ? req.query.action : [req.query.action].filter(Boolean);
-  const [route] = segments;
+  const [route] = getActionSegments(req, 'sms');
 
   switch (route) {
     case 'list': return handleList(req, res);
