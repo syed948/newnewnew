@@ -67,7 +67,7 @@
       device.on('registered', () => setStatus('Ready'));
       device.on('error', (err) => {
         setStatus('Error');
-        showToast(err.message || 'Voice connection error', 'error');
+        showToast(errMsg(err, 'Voice connection error'), 'error');
       });
       device.on('tokenWillExpire', async () => {
         const { token: fresh } = await api('/calls/token');
@@ -77,7 +77,7 @@
       await device.register();
     } catch (err) {
       setupWarning.style.display = 'block';
-      setupWarning.textContent = err.message || 'Twilio Voice is not configured yet.';
+      setupWarning.textContent = errMsg(err, 'Twilio Voice is not configured yet.');
       callBtn.disabled = true;
     }
   }
@@ -100,11 +100,11 @@
       activeCall.on('cancel', resetCallUI);
       activeCall.on('reject', resetCallUI);
       activeCall.on('error', (err) => {
-        showToast(err.message || 'Call error', 'error');
+        showToast(errMsg(err, 'Call error'), 'error');
         resetCallUI();
       });
     } catch (err) {
-      showToast(err.message || 'Could not place the call', 'error');
+      showToast(errMsg(err, 'Could not place the call'), 'error');
       resetCallUI();
     }
   });
@@ -143,7 +143,7 @@
         </tr>
       `).join('');
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(errMsg(err), 'error');
     }
   }
 
@@ -169,7 +169,7 @@
       smsCharCount.textContent = '0 / 1600';
       loadMessages();
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(errMsg(err), 'error');
     } finally {
       btn.disabled = false;
       btn.textContent = 'Send message';
@@ -197,7 +197,7 @@
         </tr>
       `).join('');
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(errMsg(err), 'error');
     }
   }
 })();

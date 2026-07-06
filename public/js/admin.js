@@ -61,7 +61,7 @@
       const { token } = await api('/calls/token');
       device = new Twilio.Device(token, { logLevel: 'error' });
       device.on('registered', () => setStatus('Ready'));
-      device.on('error', (err) => { setStatus('Error'); showToast(err.message || 'Voice connection error', 'error'); });
+      device.on('error', (err) => { setStatus('Error'); showToast(errMsg(err, 'Voice connection error'), 'error'); });
       device.on('tokenWillExpire', async () => {
         const { token: fresh } = await api('/calls/token');
         device.updateToken(fresh);
@@ -69,7 +69,7 @@
       await device.register();
     } catch (err) {
       setupWarning.style.display = 'block';
-      setupWarning.textContent = err.message || 'Twilio Voice is not configured yet. Add credentials below in Settings.';
+      setupWarning.textContent = errMsg(err, 'Twilio Voice is not configured yet. Add credentials below in Settings.');
       callBtn.disabled = true;
     }
   }
@@ -88,9 +88,9 @@
       activeCall.on('disconnect', resetCallUI);
       activeCall.on('cancel', resetCallUI);
       activeCall.on('reject', resetCallUI);
-      activeCall.on('error', (err) => { showToast(err.message || 'Call error', 'error'); resetCallUI(); });
+      activeCall.on('error', (err) => { showToast(errMsg(err, 'Call error'), 'error'); resetCallUI(); });
     } catch (err) {
-      showToast(err.message || 'Could not place the call', 'error');
+      showToast(errMsg(err, 'Could not place the call'), 'error');
       resetCallUI();
     }
   });
@@ -120,7 +120,7 @@
           <td>${timeAgo(c.created_at)}</td>
         </tr>
       `).join('');
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   }
 
   // ================= SMS (send + org-wide history) =================
@@ -139,7 +139,7 @@
       showToast('Message sent', 'success');
       smsBodyInput.value = ''; smsCharCount.textContent = '0 / 1600';
       loadMessages();
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
     finally { btn.disabled = false; btn.textContent = 'Send message'; }
   });
 
@@ -160,7 +160,7 @@
           <td>${timeAgo(m.created_at)}</td>
         </tr>
       `).join('');
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   }
 
   // ================= TEAM =================
@@ -186,7 +186,7 @@
           </td>
         </tr>
       `).join('');
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   }
 
   document.getElementById('usersBody').addEventListener('click', async (e) => {
@@ -210,7 +210,7 @@
         showToast('User removed', 'success');
         loadUsers();
       }
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   });
 
   document.getElementById('addUserBtn').addEventListener('click', () => {
@@ -241,7 +241,7 @@
       tempPasswordBox.style.display = 'block';
       tempPasswordBox.innerHTML = `Account created. Share this temporary password with ${escapeHtml(name)}:<br><strong>${escapeHtml(temporary_password)}</strong>`;
       loadUsers();
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   });
 
   // ================= SETTINGS =================
@@ -260,7 +260,7 @@
         : 'Leave blank to keep the current value';
       document.getElementById('s_twiml_app_sid').value = settings.twilio_twiml_app_sid || '';
       document.getElementById('s_caller_id').value = settings.twilio_caller_id || '';
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   }
 
   document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
@@ -276,6 +276,6 @@
       await api('/admin/settings', { method: 'PUT', body: JSON.stringify(payload) });
       showToast('Settings saved', 'success');
       loadSettings();
-    } catch (err) { showToast(err.message, 'error'); }
+    } catch (err) { showToast(errMsg(err), 'error'); }
   });
 })();

@@ -90,6 +90,17 @@ function escapeHtml(str) {
   ));
 }
 
+// Safely extracts a human-readable message from a caught error, without assuming it's
+// always an Error object with a .message property - some libraries (including the Twilio
+// Voice SDK, in certain failure paths) reject promises or emit events with undefined or a
+// plain string instead, and reading .message off undefined would throw a second error on
+// top of the first.
+function errMsg(err, fallback = 'Something went wrong. Please try again.') {
+  if (err && typeof err.message === 'string' && err.message) return err.message;
+  if (typeof err === 'string' && err) return err;
+  return fallback;
+}
+
 function timeAgo(isoString) {
   const d = new Date(isoString);
   const diff = Math.max(0, (Date.now() - d.getTime()) / 1000);
