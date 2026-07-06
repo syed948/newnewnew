@@ -4,7 +4,7 @@
 // are ONE Vercel Function instead of four - Vercel's free/Hobby tier caps a project at
 // 12 serverless functions total, so related routes are grouped behind catch-all files
 // like this one rather than one file per endpoint.
-const { withApi, withAuth, ok, fail, rateLimit, clientIp } = require('../../lib/http');
+const { withApi, withAuth, ok, fail, rateLimit, clientIp, getActionSegments } = require('../../lib/http');
 const { authenticate, createToken, createRefreshToken, refreshAccessToken } = require('../../lib/auth');
 const { logInfo, logError } = require('../../lib/logger');
 
@@ -71,8 +71,7 @@ async function handleMe(req, res) {
 }
 
 module.exports = withApi(async (req, res) => {
-  const segments = Array.isArray(req.query.action) ? req.query.action : [req.query.action].filter(Boolean);
-  const [route] = segments;
+  const [route] = getActionSegments(req, 'auth');
 
   switch (route) {
     case 'login': return handleLogin(req, res);
